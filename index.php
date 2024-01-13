@@ -1,3 +1,3 @@
 <?php
 echo "Hello PHP";
-echo "練習"
+echo "練習"　　
