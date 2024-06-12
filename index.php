@@ -9,8 +9,14 @@ if (isset($_POST["submitButton"])) {
   var_dump($comment);
 }
 
+$comment_array = array();
 
+// コメントデータを全件取得
+$sql = "SELECT * FROM comment";
+$statement = $pdo->prepare($sql);
+$statement->execute();
 
+$comment_array = $statement;
 
 ?>
 
@@ -39,14 +45,16 @@ if (isset($_POST["submitButton"])) {
       </div>
       <section>
         <article>
-          <div class="wrapper">
-            <div class="nameArea">
-              <span>名前：</span>
-              <p class="username">kota</p>
-              <time>：2022/7/16 12:00</time>
+          <?php foreach ($comment_array as $value) : ?>
+            <div class="wrapper">
+              <div class="nameArea">
+                <span>名前：</span>
+                <p class="username"><?php echo $value["user_name"] ?></p>
+                <time>：<?php echo $value["post_date"] ?></time>
+              </div>
+              <p class="comment"><?php echo $value["body"] ?></p>
             </div>
-            <p class="comment">手書きのコメントです</p>
-          </div>
+          <?php endforeach ?>
         </article>
       </section>
       <form class="formWrapper" method="post">
