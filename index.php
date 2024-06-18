@@ -2,11 +2,31 @@
 
 include_once("./app/database/connect.php");
 
+$error_msg = array();
+
 if (isset($_POST["submitButton"])) {
-  $username = $_POST["username"];
-  var_dump($username);
-  $comment = $_POST["inputComment"];
-  var_dump($comment);
+  //名前のバリデーション
+  if (empty($_POST["username"])) {
+    $error_msg["username"] = "名前を入力してください";
+  }
+  //コメントのバリデーション
+  if (empty($_POST["inputComment"])) {
+    $error_msg["inputComment"] = "コメントを入力してください";
+  }
+
+  if (empty($error_msg)) {
+    $post_date = date("Y-m-d H:i:s");
+
+    $sql = "INSERT INTO `comment` (`user_name`, `body`, `post_date`) VALUES (:username, :inputComment, :post_date)";
+    $statement = $pdo->prepare($sql);
+
+    //値をセットする
+    $statement->bindParam(":username", $_POST["username"], PDO::PARAM_STR);
+    $statement->bindParam(":inputComment", $_POST["inputComment"], PDO::PARAM_STR);
+    $statement->bindParam(":post_date", $post_date, PDO::PARAM_STR);
+
+    $statement->execute();
+  }
 }
 
 $comment_array = array();
@@ -36,6 +56,14 @@ $comment_array = $statement;
     <hr>
   </header>
 
+  <!-- バリデーションチェックの出力 -->
+  <?php if (isset($error_msg)) : ?>
+    <ul class="errorMsg">
+      <?php foreach ($error_msg as $error) : ?>
+        <li><?php echo $error ?></li>
+      <?php endforeach; ?>
+    </ul>
+  <?php endif; ?>
   <!-- スレッドエリア -->
   <div class="threadWrapper">
     <div class="childWrapper">
