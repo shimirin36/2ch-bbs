@@ -72,3 +72,24 @@ section .comment {
   font-weight: bold;
   margin-left: 70px;
 }
+
+.newThreadWrapper {
+  background-color: rgb(180, 236, 180);
+  padding: 10px;
+  max-width: 1300;
+  margin: 0 auto;
+  border: 1px solid black;
+  margin-bottom: 20px;
+}
+
+.newThreadChildWrapper {
+  text-align: center;
+  padding: 10px;
+  border: 1px solid black;
+}
+
+.newThreadChildWrapper button a {
+  width: 150px;
+  color: black;
+  text-decoration: none;
+}
