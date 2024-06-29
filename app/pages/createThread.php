@@ -1,6 +1,7 @@
 <?php
 
 include_once("../database/connect.php");
+include("../../app/functions/thread_add.php");
 ?>
 
 <!DOCTYPE html>
@@ -21,13 +22,13 @@ include_once("../database/connect.php");
   </div>
   <form method="post" class="formWrapper">
     <div>
-      <label for="">スレッド名</label>
+      <label>スレッド名</label>
       <input type="text" name="title">
-      <label for="">名前</label>
+      <label>名前</label>
       <input type="text" name="username">
     </div>
     <div>
-      <textarea name="body" class="commentTextArea"></textarea>
+      <textarea name="inputComment" class="commentTextArea"></textarea>
     </div>
     <input type="submit" value="立ち上げ" name="threadSubmitButton">
   </form>
