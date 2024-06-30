@@ -9,7 +9,7 @@ if (isset($_POST["submitButton"])) {
   <div>
     <input type="submit" value="書き込む" name="submitButton">
     <label>名前：</label>
-    <input type="text" name="username">
+    <input type="text" name="username" value="<?php if ($thread["id"] == $value["thread_id"]) echo $_SESSION["username"]; ?>">
     <input type="hidden" name="threadId" value="<?php echo $thread["id"]; ?>">
   </div>
   <div>

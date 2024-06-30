@@ -1,6 +1,8 @@
 <?php
 $error_msg = array();
 
+session_start();
+
 if (isset($_POST["submitButton"])) {
   //名前のバリデーション
   if (empty($_POST["username"])) {
@@ -8,6 +10,7 @@ if (isset($_POST["submitButton"])) {
   } else {
     // エスケープ処理
     $escaped["username"] = htmlspecialchars($_POST["username"], ENT_QUOTES, "utf-8");
+    $_SESSION["username"] = $escaped["username"];
   }
   //コメントのバリデーション
   if (empty($_POST["inputComment"])) {
