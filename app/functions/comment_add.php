@@ -20,15 +20,23 @@ if (isset($_POST["submitButton"])) {
   if (empty($error_msg)) {
     $post_date = date("Y-m-d H:i:s");
 
-    $sql = "INSERT INTO `comment` (`user_name`, `body`, `post_date`, `thread_id`) VALUES (:username, :inputComment, :post_date, :thread_id)";
-    $statement = $pdo->prepare($sql);
+    // トランザクションの開始
+    $pdo->beginTransaction();
+    try {
+      $sql = "INSERT INTO `comment` (`user_name`, `body`, `post_date`, `thread_id`) VALUES (:username, :inputComment, :post_date, :thread_id)";
+      $statement = $pdo->prepare($sql);
 
-    //値をセットする
-    $statement->bindParam(":username", $escaped["username"], PDO::PARAM_STR);
-    $statement->bindParam(":inputComment", $escaped["inputComment"], PDO::PARAM_STR);
-    $statement->bindParam(":post_date", $post_date, PDO::PARAM_STR);
-    $statement->bindParam(":thread_id", $_POST["threadId"], PDO::PARAM_STR);
+      //値をセットする
+      $statement->bindParam(":username", $escaped["username"], PDO::PARAM_STR);
+      $statement->bindParam(":inputComment", $escaped["inputComment"], PDO::PARAM_STR);
+      $statement->bindParam(":post_date", $post_date, PDO::PARAM_STR);
+      $statement->bindParam(":thread_id", $_POST["threadId"], PDO::PARAM_STR);
 
-    $statement->execute();
+      $statement->execute();
+
+      $pdo->commit();
+    } catch (Exception $err) {
+      $pdo->rollBack();
+    }
   }
 }

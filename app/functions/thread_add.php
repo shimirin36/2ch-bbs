@@ -29,30 +29,38 @@ if (isset($_POST["threadSubmitButton"])) {
   if (empty($error_msg)) {
     $post_date = date("Y-m-d H:i:s");
 
-    // スレッドを追加
-    $sql = "INSERT INTO `thread` (`title`) VALUES (:title)";
-    $statement = $pdo->prepare($sql);
+    // トランザクションの開始
+    $pdo->beginTransaction();
+    try {
+      // スレッドを追加
+      $sql = "INSERT INTO `thread` (`title`) VALUES (:title)";
+      $statement = $pdo->prepare($sql);
 
-    //値をセットする
-    $statement->bindParam(":title", $escaped["title"], PDO::PARAM_STR);
+      //値をセットする
+      $statement->bindParam(":title", $escaped["title"], PDO::PARAM_STR);
 
-    // SQL実行
-    $statement->execute();
+      // SQL実行
+      $statement->execute();
 
-    // コメントも追加
-    $sql = "INSERT INTO comment (user_name, body, post_date, thread_id) 
-    VALUES (:username, :inputComment, :post_date, (SELECT id FROM thread WHERE title = :title))";
-    $statement = $pdo->prepare($sql);
+      // コメントも追加
+      $sql = "INSERT INTO comment (user_name, body, post_date, thread_id) 
+      VALUES (:username, :inputComment, :post_date, (SELECT id FROM thread WHERE title = :title))";
+      $statement = $pdo->prepare($sql);
 
-    //値をセットする
-    $statement->bindParam(":username", $escaped["username"], PDO::PARAM_STR);
-    $statement->bindParam(":inputComment", $escaped["inputComment"], PDO::PARAM_STR);
-    $statement->bindParam(":post_date", $post_date, PDO::PARAM_STR);
-    $statement->bindParam(":title", $escaped["title"], PDO::PARAM_STR);
+      //値をセットする
+      $statement->bindParam(":username", $escaped["username"], PDO::PARAM_STR);
+      $statement->bindParam(":inputComment", $escaped["inputComment"], PDO::PARAM_STR);
+      $statement->bindParam(":post_date", $post_date, PDO::PARAM_STR);
+      $statement->bindParam(":title", $escaped["title"], PDO::PARAM_STR);
 
-    $statement->execute();
+      $statement->execute();
 
-    // 掲示板ページにリダイレクト
-    header("Location: http://localhost:8080/2ch-bbs");
+      $pdo->commit();
+
+      // 掲示板ページにリダイレクト
+      header("Location: http://localhost:8080/2ch-bbs");
+    } catch (Exception $err) {
+      $pdo->rollBack();
+    }
   }
 }
